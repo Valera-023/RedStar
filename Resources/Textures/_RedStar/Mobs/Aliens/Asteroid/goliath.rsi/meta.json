@@ -12,15 +12,7 @@
 			"directions": 4
         },
         {
-            "name": "goliath_alert",
-			"directions": 4
-        },
-        {
             "name": "goliath_dead"
-        },
-        {
-            "name": "goliath_preattack",
-			"directions": 4
         }
     ]
 }
