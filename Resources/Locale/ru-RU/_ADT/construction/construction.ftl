@@ -1,4 +1,4 @@
-﻿construction-name-sofa-left-side = левая сторона дивана
+construction-name-sofa-left-side = левая сторона дивана
 construction-name-black-sofa-left-side = левая сторона чёрного дивана
 construction-name-black-sofa-middle = средняя часть чёрного дивана
 construction-name-black-sofa-right-side = правая сторона чёрного дивана
