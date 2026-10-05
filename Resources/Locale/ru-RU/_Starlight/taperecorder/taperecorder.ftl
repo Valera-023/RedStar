@@ -11,6 +11,7 @@ tape-recorder-locked = Нельзя извлечь кассету, пока ди
 tape-recorder-voice-unknown = Неизвестный голос
 tape-recorder-voice-unintelligible = Неразборчиво
 tape-recorder-message-corruption = #
+tape-recorder-interview-label = Интервью с Гарри Смошем
 
 tape-recorder-menu-title = Диктофон
 tape-recorder-menu-controls-label = Управление:

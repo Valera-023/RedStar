@@ -11,6 +11,7 @@ tape-recorder-locked = Cant eject while the tape recorder is running.
 tape-recorder-voice-unknown = Unknown
 tape-recorder-voice-unintelligible = Unintelligible
 tape-recorder-message-corruption = #
+tape-recorder-interview-label = Interview with Garry Smosh
 
 tape-recorder-menu-title = Tape Recorder
 tape-recorder-menu-controls-label = Controls:
