@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._Floof.OfferItem;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Climbing.Events;
@@ -24,7 +25,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Timing;
 
-namespace Content.Shared._DV;
+namespace Content.Shared._DV.Carrying;
 
 public sealed partial class CarryingSystem : EntitySystem
 {
@@ -306,8 +307,11 @@ public sealed partial class CarryingSystem : EntitySystem
 
         for (var i = 0; i < freeHandsRequired; i++)
         {
-            if (_virtualItem.TrySpawnVirtualItemInHand(carried, carrier))
+            if (_virtualItem.TrySpawnVirtualItemInHand(carried, carrier, out var virtualItem))
+            {
+                EnsureComp<OfferableVirtualItemComponent>(virtualItem.Value);
                 continue;
+            }
 
             DropCarried(carrier, carried);
             return;
@@ -324,6 +328,23 @@ public sealed partial class CarryingSystem : EntitySystem
 
         ReleaseCarried((carried, component), attachToGrid);
         RemComp<BeingCarriedComponent>(carried);
+    }
+
+    /// <summary>
+    /// Transfers a carried entity after checking that the receiver can carry it.
+    /// </summary>
+    public bool TryTransferCarried(EntityUid oldCarrier, EntityUid newCarrier, Entity<CarriableComponent> carried)
+    {
+        if (_timing.ApplyingState || TerminatingOrDeleted(carried) ||
+            !TryComp<BeingCarriedComponent>(carried, out var beingCarried) || beingCarried.Releasing ||
+            beingCarried.Carrier != oldCarrier ||
+            !TryComp<CarryingComponent>(oldCarrier, out var carrying) || carrying.Carried != carried.Owner ||
+            !CanCarry(newCarrier, carried, alreadyCarried: true))
+            return false;
+
+        DropCarried(oldCarrier, carried);
+        Carry(newCarrier, carried);
+        return TryComp<BeingCarriedComponent>(carried, out var transferred) && transferred.Carrier == newCarrier;
     }
 
     private void CleanupCarrier(EntityUid carrier, EntityUid carried)
@@ -377,6 +398,11 @@ public sealed partial class CarryingSystem : EntitySystem
 
     public bool CanCarry(EntityUid carrier, Entity<CarriableComponent> carried)
     {
+        return CanCarry(carrier, carried, alreadyCarried: false);
+    }
+
+    private bool CanCarry(EntityUid carrier, Entity<CarriableComponent> carried, bool alreadyCarried)
+    {
         var handsRequired = GetRequiredHands(carrier, carried);
 
         return carrier != carried.Owner &&
@@ -385,7 +411,7 @@ public sealed partial class CarryingSystem : EntitySystem
                !HasComp<CarryingComponent>(carrier) &&
                HasComp<MapGridComponent>(Transform(carrier).ParentUid) &&
                !HasComp<BeingCarriedComponent>(carrier) &&
-               !HasComp<BeingCarriedComponent>(carried) &&
+               (alreadyCarried || !HasComp<BeingCarriedComponent>(carried)) &&
                TryComp<HandsComponent>(carrier, out var hands) &&
                _hands.CountFreeHands((carrier, hands)) >= handsRequired &&
                GetPickupDuration(carrier, carried) < carried.Comp.MaximumPickupDuration;
