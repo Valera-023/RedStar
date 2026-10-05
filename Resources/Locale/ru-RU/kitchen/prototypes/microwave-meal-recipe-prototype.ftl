@@ -219,3 +219,4 @@ microwave-meal-recipe-cotton-cake-name = cotton cake recipe
 microwave-meal-recipe-aloe-cream-name = aloe cream recipe
 microwave-meal-recipe-medicated-suture-name = medicated suture recipe
 microwave-meal-recipe-regenerative-mesh-name = regenerative mesh recipe
+microwave-meal-recipe-pelmeni-name = рецепт пельменей
